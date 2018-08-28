@@ -5,13 +5,20 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
  * This class implements Aho-Corasick algorithm for multiple exact string
  * matching problem.
+ * 
+ * @author Rodion "rodde" Efremov
+ * @version 1.6 (Jan 1, 2016)
+ * @author ada42
+ * @version 2.0 2018
  */
 public class AhoCorasickMatcher extends AbstractMultipleExactStringMatcher {
 
@@ -21,7 +28,7 @@ public class AhoCorasickMatcher extends AbstractMultipleExactStringMatcher {
             throw new IllegalArgumentException("No patterns given.");
         }
 
-        patterns = filterPatterns(patterns);
+        patterns = powersOfTwoFilter();
 
         Automaton data = constructACAutomaton(patterns);
         TrieNode v = data.root;
@@ -43,6 +50,20 @@ public class AhoCorasickMatcher extends AbstractMultipleExactStringMatcher {
         return resultList;
     }
 
+    
+    
+    protected String[] powersOfTwoFilter() {
+        Set<String> filter = new HashSet<>();
+        long pow = 1;
+        filter.add(String.valueOf(pow));
+    	for(int i=1;i<800;i++)
+    	{
+    	    pow*=2;
+            filter.add(String.valueOf(pow));  
+    	}
+        return filter.toArray(new String[filter.size()]);
+    	
+    }
     private static final class TrieNode {
 
         private final Map<Character, TrieNode> children = new HashMap<>();
@@ -101,7 +122,7 @@ public class AhoCorasickMatcher extends AbstractMultipleExactStringMatcher {
     private void computeFailureFunction(Automaton automaton) {
         TrieNode fallbackNode = new TrieNode();
 
-        for (char c = 'a'; c <= 'z'; ++c) {
+        for (char c = '1'; c <= '9'; ++c) {
             fallbackNode.setChild(c, automaton.root);
         }
 
@@ -112,7 +133,7 @@ public class AhoCorasickMatcher extends AbstractMultipleExactStringMatcher {
         while (!queue.isEmpty()) {
             TrieNode u = queue.removeFirst();
 
-            for (char c = 'a'; c <= 'z'; ++c) {
+            for (char c = '1'; c <= '9'; ++c) {
                 if (u.getChild(c) == null) {
                     continue;
                 }
