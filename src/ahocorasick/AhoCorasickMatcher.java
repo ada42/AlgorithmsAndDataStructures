@@ -138,7 +138,7 @@ public class AhoCorasickMatcher extends AbstractMultipleExactStringMatcher {
                 queue.addLast(v);
             }
         }
-        List<Integer> arg1 = new ArrayList<>();
+        List<Integer>   arg1 = new ArrayList<>();
         automaton.patterns.put(automaton.root, arg1);
     }
 
